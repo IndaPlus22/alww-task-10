@@ -22,10 +22,10 @@ c(Row, Col, 'd') :-
     check_prep(Col,Row,Board).
 
 % Make move
-mm(Row, Col, Move, FilePath, NewBoard) :-
+mm(Row, Col, Type, FilePath) :-
    load_board(FilePath, Board),
    print_nicely(Board),
-   make_move(Row, Col, Move, Board, NewBoard),
+   make_move(Row, Col, Type, Board, NewBoard),
    !,
    print_nicely(NewBoard),
    check_prep(Row, Col, NewBoard).
