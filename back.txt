@@ -22,46 +22,17 @@ c(Row, Col, 'd') :-
     check_prep(Col,Row,Board).
 
 % Make move
-mm(Row, Col, Move, FilePath, NewBoard) :-
+mm(Row, Col, Move, FilePath) :-
    load_board(FilePath, Board),
-   print_nicely(Board),
    make_move(Row, Col, Move, Board, NewBoard),
-   !,
-   print_nicely(NewBoard),
-   check_prep(Row, Col, NewBoard).
+   print_nicely(NewBoard).
 
-% Infinite Loop of make move
-imove(FilePath) :-
-    change_move(Move, NewMove),
-    write("Row:"), nl, read(X), nl,
-    write("Column:"), nl, read(Y), nl,
-    load_board(FilePath, Board),
-    print_nicely(Board),
-    make_move(X, Y, Move, Board, NewBoard),
-    !,
-    print_nicely(NewBoard),
-    imovel(FilePath, NewBoard, NewMove).
-
-imovel(FilePath, OldBoard, Move) :-
-    change_move(Move, NewMove),
-    write("Row:"), nl, read(X), nl,
-    write("Column:"), nl, read(Y), nl,
-    make_move(X, Y, Move, OldBoard, NewBoard),
-    !,
-    print_nicely(NewBoard),
-    imovel(FilePath, NewBoard, NewMove).
-
-change_move(w, NewMove) :-
-    NewMove = b.
-change_move(_, NewMove) :-
-    NewMove = w.
-
-check_prep(Row,Col,Board) :-
-    nth1_2d(Row, Col, Board, Stone),
+check_prep(Col,Row,Board) :-
+    nth1_2d(Row, Column, Board, Stone),
     (Stone = 'w'; Stone = 'b'),
     append([],[],Things),
-    check_alive(Row,Col,Board,Stone,[], Things),
-    !.
+    check_alive(Col,Row,Board,Stone,[], Things),
+    write(Things).
 
     
 % Checks whether the group of stones connected to
@@ -78,6 +49,8 @@ check_alive(Row, Column, Board, Side, Checked_coordinates, Things):-
             Right is Column + 1,
             
             check_inbounds(Upp, Down, Left, Right), 
+            write((Row, Column)),
+            nl,
             append([(Row, Column)], Things, X),
         (
             check_alive(Upp, Column, Board, Side, [(Row, Column) | Checked_coordinates],X);
@@ -105,13 +78,13 @@ print_nicely([H|T]) :-
     print_nicely(T).
 
 printl([]) :- !.
-printl([w|T]) :-
+printl(['w'|T]) :-
     write('X'),
     printl(T).
-printl([b|T]) :-
+printl(['b'|T]) :-
     write('O'),
     printl(T).
-printl([e|T]) :-
+printl(['e'|T]) :-
     write(' '),
     printl(T).
 
@@ -119,24 +92,27 @@ make_move(Row, Col, Move, Board, NewBoard) :-
     make_movel(Row, Col, Move, Board, 1, 1, [], NewBoard).
 
 make_movel(_, _, _, [], _, _, Acc, NewBoard) :- 
-    reverse(Acc, NewBoard).
+    write('Rev'),
+    reverse(Acc, NewBoard),
+    make_movel(_, _, _, [], _, _, Acc, NewBoard)
 make_movel(Row, Col, Move, [H|T], Row, CounterCol, Acc, NewBoard) :-
+    append([],[], Res),
     make_movell(Col, Move, H, CounterCol, [], Res),
-    append([Res], Acc, X),
+    append(Res, Acc, X),
     IncrementedCounterRow is Row + 1,
     make_movel(Row, Col, Move, T, IncrementedCounterRow, CounterCol, X, NewBoard).
 make_movel(Row, Col, Move, [H|T], CounterRow, CounterCol, Acc, NewBoard) :-
-    append([H], Acc, X),
+    append(H, Acc, X),
     IncrementedCounterRow is CounterRow + 1,
     make_movel(Row, Col, Move, T, IncrementedCounterRow, CounterCol, X, NewBoard).
 
-make_movell(_, _, _, 10, NewH, Res) :- 
-    reverse(NewH, Res).
-make_movell(Col, Move, [_|T], Col, NewH, Res) :-
+make_movell(_, _, H, 10, NewH, Res) :- !.
+make_movell(Col, Move, [H|T], Col, NewH, Res) :-
     append([Move], NewH, X),
     IncrementedCounterCol is Col + 1,
     make_movell(Col, Move, T, IncrementedCounterCol, X, Res).
 make_movell(Col, Move, [H|T], CounterCol, NewH, Res) :-
     append([H], NewH, X),
     IncrementedCounterCol is CounterCol + 1,
+    write(IncrementedCounterCol),
     make_movell(Col, Move, T, IncrementedCounterCol, X, Res).
