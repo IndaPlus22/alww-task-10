@@ -6,7 +6,7 @@
 [e, e, e, e, b, b, e, e, e],
 [e, e, e, b, w, w, b, e, e],
 [e, e, e, b, w, w, b, e, e],
-[e, e, e, b, w, b, b, e, e],
-[e, e, e, e, b, e, e, e, e],
+[e, e, e, e, w, b, b, e, e],
+[e, e, e, e, e, e, e, e, e],
 [e, e, e, e, e, e, e, e, e],
 [e, e, e, e, e, e, e, e, e]].
