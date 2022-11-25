@@ -20,6 +20,10 @@ c(Row, Col, 'd') :-
     load_board('dead_ex.txt', Board),
     print_nicely(Board),
     check_prep(Col,Row,Board).
+c(Row, Col, FilePath) :-
+    load_board(FilePath, Board),
+    print_nicely(Board),
+    check_prep(Col,Row,Board).
 
 % Make move
 mm(Row, Col, Type, FilePath) :-
@@ -92,10 +96,10 @@ check_if_checked(Current_coordinate, [H|Tail]) :-
     Current_coordinate = H; check_if_checked(Current_coordinate, Tail).
 
 check_inbounds(Upp,Down,Left,Right) :-
-    Upp < 10,
-    Down > 0,
-    Left > 0,
-    Right < 10.
+    Upp < 11,
+    Down > -1,
+    Left > -1,
+    Right < 11.
 
 
 print_nicely([]) :- !.
